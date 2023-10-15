@@ -1,5 +1,27 @@
 var TimeLimitedCache = function () {
-  this.cache = {};
+  const cache = {};
+
+  this.getKey = function (key) {
+    return cache[key]?.value || -1;
+  };
+
+  this.exists = function (key) {
+    return !!cache[key];
+  };
+
+  this.insert = function (key, value, duration) {
+    if(cache[key]){
+      clearTimeout(cache[key].timeout)
+    }
+    cache[key] = {
+      value,
+      timeout: setTimeout(() => delete cache[key], duration),
+    };
+  };
+
+  this.count = function () {
+    return Object.values(cache).length;
+  };
 };
 
 /**
@@ -9,16 +31,9 @@ var TimeLimitedCache = function () {
  * @return {boolean} if un-expired key already existed
  */
 TimeLimitedCache.prototype.set = function (key, value, duration) {
-  const exists = !!this.cache[key];
+  const exists = this.exists(key);
 
-  if(this.cache[key]){
-    clearTimeout(this.cache[key].timeout)
-  }
-
-  this.cache[key] = {
-    value,
-    timeout: setTimeout(() => delete this.cache[key], duration),
-  };
+  this.insert(key, value, duration);
 
   return exists;
 };
@@ -28,14 +43,14 @@ TimeLimitedCache.prototype.set = function (key, value, duration) {
  * @return {number} value associated with key
  */
 TimeLimitedCache.prototype.get = function (key) {
-  return this.cache[key]?.value || -1;
+  return this.getKey(key);
 };
 
 /**
  * @return {number} count of non-expired keys
  */
 TimeLimitedCache.prototype.count = function () {
-  return Object.keys(this.cache).length
+  return this.count();
 };
 
 /**

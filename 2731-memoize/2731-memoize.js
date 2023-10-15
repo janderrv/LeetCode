@@ -5,9 +5,8 @@ function memoize(fn) {
       return cache[args];
     }
 
-    const result = fn(...args);
-    cache[args] = result;
-    return result;
+    cache[args] = fn(...args);
+    return cache[args];
   };
 }
 

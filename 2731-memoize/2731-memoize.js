@@ -1,7 +1,7 @@
 function memoize(fn) {
   const cache = {};
   return function (...args) {
-    if (args in cache) {
+    if (cache[args] != undefined) {
       return cache[args];
     }
 

@@ -2,9 +2,6 @@ var TimeLimitedCache = function () {
   const cache = {};
 
   this.getKey = function (key) {
-    if (new Date().getTime() > cache[key]?.expiresAt) {
-      delete cache[key];
-    }
     return cache[key]?.value || -1;
   };
 
@@ -12,24 +9,18 @@ var TimeLimitedCache = function () {
     return !!cache[key];
   };
 
-  this.clear = function (key) {
-    return clearInterval(cache[key].interval);
-  };
-
   this.insert = function (key, value, duration) {
+    if(cache[key]){
+        clearTimeout(cache[key].timeout)
+    }
     cache[key] = {
       value,
-      expiresAt: new Date().getTime() + duration,
+      timeout: setTimeout(() => delete cache[key], duration),
     };
   };
 
   this.count = function () {
-    let keysCount = 0;
-    for (const key of Object.values(cache)) {
-      keysCount += new Date().getTime() <= key?.expiresAt ? 1 : 0;
-    }
-
-    return keysCount;
+    return Object.values(cache).length
   };
 };
 

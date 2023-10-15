@@ -1,27 +1,26 @@
 var TimeLimitedCache = function () {
-  const cache = new Map();
+  const cache = {};
 
   this.getKey = function (key) {
-    return cache.get(key)?.value || -1;
+    return cache[key]?.value || -1;
   };
 
   this.exists = function (key) {
-    return !!cache.get(key);
+    return !!cache[key];
   };
 
   this.insert = function (key, value, duration) {
-    if (cache.get(key)) {
-      clearTimeout(cache.get(key).timeout);
+    if(cache[key]){
+      clearTimeout(cache[key].timeout)
     }
-
-    cache.set(key, {
+    cache[key] = {
       value,
-      timeout: setTimeout(() => cache.delete(key), duration),
-    });
+      timeout: setTimeout(() => delete cache[key], duration),
+    };
   };
 
   this.count = function () {
-    return cache.size;
+    return Object.values(cache).length;
   };
 };
 

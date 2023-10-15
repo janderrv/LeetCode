@@ -1,13 +1,12 @@
 function memoize(fn) {
   const cache = {};
   return function (...args) {
-    const key = args.toString()
-    if (cache[key] != undefined) {
-      return cache[key];
+    if (cache[args] != undefined) {
+      return cache[args];
     }
 
-    cache[key] = fn(...args);
-    return cache[key];
+    cache[args] = fn(...args);
+    return cache[args];
   };
 }
 

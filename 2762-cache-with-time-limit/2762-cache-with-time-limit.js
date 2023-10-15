@@ -20,7 +20,7 @@ var TimeLimitedCache = function () {
   };
 
   this.count = function () {
-    return Object.values(cache).length;
+    return Object.keys(cache).length;
   };
 };
 
